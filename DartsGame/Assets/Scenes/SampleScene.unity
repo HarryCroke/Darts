@@ -592,7 +592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 945446b8ee28d4648a890a3aab88907d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentDart: {fileID: 890174468}
+  CurrentDart: {fileID: 890174468}
   DartPrefab: {fileID: 6039227782502685244, guid: 27ebad160d4bc374abb6823e6d124897,
     type: 3}
 --- !u!4 &738073454
@@ -764,9 +764,9 @@ Transform:
   m_GameObject: {fileID: 882483456}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -1.604, z: -42.4}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 2.39, z: -35.23}
+  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
@@ -1025,7 +1025,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1259595712
 MeshCollider:
   m_ObjectHideFlags: 0
