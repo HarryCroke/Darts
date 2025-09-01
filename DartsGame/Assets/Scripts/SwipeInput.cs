@@ -9,7 +9,10 @@ public class SwipeInput : MonoBehaviour
     private TouchControls touchControls;
     private Vector2 swipeStart, swipeEnd;
     private float startTime, endTime;
-    public Rigidbody Rb;
+    public Dart currentDart;
+    private Vector3 defaultDartPosition;
+    private Quaternion defaultDartRotation;
+    public GameObject DartPrefab;
 
     private void Awake()
     {
@@ -17,7 +20,14 @@ public class SwipeInput : MonoBehaviour
         touchControls.Enable();
         touchControls.Touch.Press.started += TouchStarted;
         touchControls.Touch.Press.canceled += TouchEnded;
-        touchControls.Touch.Reset.performed += Reset;
+        //touchControls.Touch.Reset.performed += Reset;
+    }
+
+    private void Start()
+    {
+        defaultDartPosition = currentDart.transform.position;
+        defaultDartRotation = currentDart.transform.rotation;
+        Dart.HitBoard += CreateNewDart;
     }
 
     private void OnEnable()
@@ -49,28 +59,22 @@ public class SwipeInput : MonoBehaviour
         print(swipeStart + " + " + swipeEnd + " = " + swipeVector);
         print(swipeDirection + "     " + swipeMagnitude);
         
-        Launch(swipeDirection, swipeMagnitude * 50, timeHeld);
-        
+        currentDart.Launch(swipeDirection, swipeMagnitude * 50, timeHeld);
     }
-
-    private void Launch(Vector2 direction, float force, float time)
-    {
-        //force /= time;
-        Vector3 forceVector = new Vector3(direction.x, -direction.y, -5) * force;
-        Rb.AddForce(forceVector, ForceMode.Impulse);
-    }
-
+    
     private Vector2 CorrectForScreenSize(Vector2 vector)
     {
         return new Vector2(vector.x / Screen.width, vector.y / Screen.height);
     }
 
-    private void Reset(InputAction.CallbackContext context)
+    public void Reset()
     {
-        Rb.transform.position = new Vector3(0, -1, 6);
-        Rb.transform.rotation = Quaternion.identity;
-        Rb.velocity = Vector3.zero;
+        currentDart.Reset();
     }
 
-
+    private void CreateNewDart()
+    {
+        currentDart = Instantiate(DartPrefab, defaultDartPosition, 
+            defaultDartRotation).GetComponent<Dart>();
+    }
 }

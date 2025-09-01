@@ -15,6 +15,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/SwipeInput.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://E:/Repositories/New folder/MetronomesAndMagic/My project/Assets/Scripts/Metronome.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 6
@@ -88,7 +89,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1756735983436</updated>
-      <workItem from="1756735986478" duration="472000" />
+      <workItem from="1756735986478" duration="5129000" />
     </task>
     <servers />
   </component>
