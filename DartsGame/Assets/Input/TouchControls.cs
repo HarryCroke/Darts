@@ -53,6 +53,15 @@ public partial class @TouchControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reset"",
+                    ""type"": ""Button"",
+                    ""id"": ""2d63fa1f-0f91-4bb9-8a71-df92e0f50179"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -88,6 +97,17 @@ public partial class @TouchControls: IInputActionCollection2, IDisposable
                     ""action"": ""Position"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52faf4a7-8264-4f6e-90df-86673abd1c34"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -99,6 +119,7 @@ public partial class @TouchControls: IInputActionCollection2, IDisposable
         m_Touch_TouchInput = m_Touch.FindAction("TouchInput", throwIfNotFound: true);
         m_Touch_Press = m_Touch.FindAction("Press", throwIfNotFound: true);
         m_Touch_Position = m_Touch.FindAction("Position", throwIfNotFound: true);
+        m_Touch_Reset = m_Touch.FindAction("Reset", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -163,6 +184,7 @@ public partial class @TouchControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Touch_TouchInput;
     private readonly InputAction m_Touch_Press;
     private readonly InputAction m_Touch_Position;
+    private readonly InputAction m_Touch_Reset;
     public struct TouchActions
     {
         private @TouchControls m_Wrapper;
@@ -170,6 +192,7 @@ public partial class @TouchControls: IInputActionCollection2, IDisposable
         public InputAction @TouchInput => m_Wrapper.m_Touch_TouchInput;
         public InputAction @Press => m_Wrapper.m_Touch_Press;
         public InputAction @Position => m_Wrapper.m_Touch_Position;
+        public InputAction @Reset => m_Wrapper.m_Touch_Reset;
         public InputActionMap Get() { return m_Wrapper.m_Touch; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -188,6 +211,9 @@ public partial class @TouchControls: IInputActionCollection2, IDisposable
             @Position.started += instance.OnPosition;
             @Position.performed += instance.OnPosition;
             @Position.canceled += instance.OnPosition;
+            @Reset.started += instance.OnReset;
+            @Reset.performed += instance.OnReset;
+            @Reset.canceled += instance.OnReset;
         }
 
         private void UnregisterCallbacks(ITouchActions instance)
@@ -201,6 +227,9 @@ public partial class @TouchControls: IInputActionCollection2, IDisposable
             @Position.started -= instance.OnPosition;
             @Position.performed -= instance.OnPosition;
             @Position.canceled -= instance.OnPosition;
+            @Reset.started -= instance.OnReset;
+            @Reset.performed -= instance.OnReset;
+            @Reset.canceled -= instance.OnReset;
         }
 
         public void RemoveCallbacks(ITouchActions instance)
@@ -223,5 +252,6 @@ public partial class @TouchControls: IInputActionCollection2, IDisposable
         void OnTouchInput(InputAction.CallbackContext context);
         void OnPress(InputAction.CallbackContext context);
         void OnPosition(InputAction.CallbackContext context);
+        void OnReset(InputAction.CallbackContext context);
     }
 }
