@@ -19,6 +19,8 @@ public class Dart : MonoBehaviour
     [SerializeField, Range(0f, 100f), Tooltip("Z Force applied to dart when launched")]
     private float ForwardForce;
     
+    int baseScore, totalScore, multiplier;
+    
     // Distance / Multiplier
     private static Dictionary<float, int> multiplierDistances = new Dictionary<float, int>
     {
@@ -30,6 +32,14 @@ public class Dart : MonoBehaviour
         {4.45f,2} // Doubles
         //{1000f, 0} // Out
     };
+
+    private static int[] scoreArray = new int[]
+    {
+        11, 14, 9, 12, 5, 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8
+
+    };
+
+    public GameObject be;
     
     private void Awake()
     {
@@ -72,9 +82,25 @@ public class Dart : MonoBehaviour
         onBoard = true;
         HitBoard?.Invoke();
         Dartboard dartboard = other.transform.parent.GetComponent<Dartboard>();
-        float scoreMultiplier = GetScoreFromDistance(GetDistanceFromBullseye(dartboard.Bullseye));
-        GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = scoreMultiplier.ToString();
 
+        CalculateScore(dartboard.Bullseye);
+        string scoreText = (baseScore + " x " + multiplier + " = " + totalScore);
+        GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = scoreText;
+
+        // float scoreMultiplier = GetScoreFromDistance(GetDistanceFromBullseye(dartboard.Bullseye));
+        // GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = scoreMultiplier.ToString();
+        // be = other.gameObject;
+
+    }
+
+    private float CalculateScore(GameObject bullseye)
+    {
+        // Score may be overwritten by bullseye
+        baseScore = GetScoreFromAngle(GetAngleFromBullseye(bullseye));
+        multiplier = GetMultiplierFromDistance(GetDistanceFromBullseye(bullseye));
+        
+        totalScore = baseScore * multiplier;
+        return totalScore;
     }
 
     private float GetDistanceFromBullseye(GameObject bullseye)
@@ -84,17 +110,56 @@ public class Dart : MonoBehaviour
         return Vector2.Distance(dartLocation, bullseyeLocation);
     }
 
-    private float GetScoreFromDistance(float distance)
+    private int GetMultiplierFromDistance(float distance)
     {
         foreach (var item in multiplierDistances)
         {
             if (distance < item.Key)
             {
+                // Bullseye
+                switch (item.Key)
+                {
+                    case 0.3f:
+                        baseScore = 25;
+                        break;
+                    case 0.55f:
+                        baseScore = 25;
+                        break;
+                }
+                
                 return item.Value;
             }
         }
 
         return 0;
     }
-    
+
+    private float GetAngleFromBullseye(GameObject bullseye)
+    {
+        Vector2 dartLocation = new Vector2(transform.position.x, transform.position.y);
+        Vector2 bullseyeLocation = new Vector2(bullseye.transform.position.x, bullseye.transform.position.y);
+        Vector2 diff = dartLocation - bullseyeLocation;
+        float angle =  (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 9;
+        if (angle < 0) angle += 360;
+        return angle;
+    }
+
+    private int GetScoreFromAngle(float angle)
+    {
+        for (int i = 0; i < scoreArray.Length; i++)
+        {
+            if (angle < (i + 1) * 18)
+            {
+                return scoreArray[i];
+            }
+        }
+
+        return 0;
+    }
+
+    private void Update()
+    {
+        if(!be) return;
+        print(GetAngleFromBullseye(be));
+    }
 }
