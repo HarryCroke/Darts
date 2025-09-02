@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Dart : MonoBehaviour
@@ -17,6 +18,18 @@ public class Dart : MonoBehaviour
     private float ForceMagnifier;
     [SerializeField, Range(0f, 100f), Tooltip("Z Force applied to dart when launched")]
     private float ForwardForce;
+    
+    // Distance / Multiplier
+    private static Dictionary<float, int> multiplierDistances = new Dictionary<float, int>
+    {
+        {0.3f, 2}, // Double Bull
+        {0.55f, 1}, // Single bull
+        {2.55f, 1}, // Singles 1
+        {2.85f, 3}, // Triples
+        {4.15f, 1}, // Singles 2
+        {4.45f,2} // Doubles
+        //{1000f, 0} // Out
+    };
     
     private void Awake()
     {
@@ -57,8 +70,31 @@ public class Dart : MonoBehaviour
         if(!other.CompareTag("Dartboard") || onBoard) return;
         rb.isKinematic = true;
         onBoard = true;
-        print("Hit");
         HitBoard?.Invoke();
+        Dartboard dartboard = other.transform.parent.GetComponent<Dartboard>();
+        float scoreMultiplier = GetScoreFromDistance(GetDistanceFromBullseye(dartboard.Bullseye));
+        GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = scoreMultiplier.ToString();
+
     }
 
+    private float GetDistanceFromBullseye(GameObject bullseye)
+    {
+        Vector2 dartLocation = new Vector2(transform.position.x, transform.position.y);
+        Vector2 bullseyeLocation = new Vector2(bullseye.transform.position.x, bullseye.transform.position.y);
+        return Vector2.Distance(dartLocation, bullseyeLocation);
+    }
+
+    private float GetScoreFromDistance(float distance)
+    {
+        foreach (var item in multiplierDistances)
+        {
+            if (distance < item.Key)
+            {
+                return item.Value;
+            }
+        }
+
+        return 0;
+    }
+    
 }
