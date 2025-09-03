@@ -11,7 +11,7 @@ public class Dart : MonoBehaviour
     private bool onBoard;
     
     // Called when the dart hits the dartboard
-    public delegate void HitBoardEventHandler();
+    public delegate void HitBoardEventHandler(int score, bool isDouble);
     public static HitBoardEventHandler HitBoard;
     
     // Dart Stats
@@ -82,12 +82,16 @@ public class Dart : MonoBehaviour
         if(!other.CompareTag("Dartboard") || onBoard) return;
         rb.isKinematic = true;
         onBoard = true;
-        HitBoard?.Invoke();
         Dartboard dartboard = other.transform.parent.GetComponent<Dartboard>();
 
         totalScore = CalculateScore(dartboard.Bullseye);
         string scoreText = (baseScore + " x " + multiplier + " = " + totalScore);
         GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = scoreText;
+        
+        // Disable collision once on the board
+        GetComponent<BoxCollider>().enabled = false;
+        
+        HitBoard?.Invoke(totalScore, true);
     }
 
     /// <summary>

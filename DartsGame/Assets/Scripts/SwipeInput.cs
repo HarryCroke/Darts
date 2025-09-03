@@ -18,6 +18,9 @@ public class SwipeInput : MonoBehaviour
     private Quaternion defaultDartRotation;
     
     public GameObject DartPrefab;
+    
+    public delegate void DartThrownEventHandler(Dart dart);
+    public static DartThrownEventHandler DartThrown;
 
     private void Awake()
     {
@@ -43,7 +46,7 @@ public class SwipeInput : MonoBehaviour
     {
         defaultDartPosition = CurrentDart.transform.position;
         defaultDartRotation = CurrentDart.transform.rotation;
-        Dart.HitBoard += CreateNewDart;
+        //Dart.HitBoard += CreateNewDart;
     }
 
     /// <summary>
@@ -72,6 +75,7 @@ public class SwipeInput : MonoBehaviour
         Vector2 swipeDirection = swipeVector.normalized;
         
         CurrentDart.Launch(swipeDirection, swipeMagnitude, timeHeld);
+        DartThrown?.Invoke(CurrentDart);
     }
     
     /// <summary>
@@ -92,11 +96,5 @@ public class SwipeInput : MonoBehaviour
         CurrentDart.Reset();
     }
 
-    /// <summary>
-    /// </summary>
-    private void CreateNewDart()
-    {
-        CurrentDart = Instantiate(DartPrefab, defaultDartPosition, 
-            defaultDartRotation).GetComponent<Dart>();
-    }
+
 }
