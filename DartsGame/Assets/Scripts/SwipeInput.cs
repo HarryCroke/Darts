@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class SwipeInput : MonoBehaviour
 {
@@ -21,6 +22,13 @@ public class SwipeInput : MonoBehaviour
     
     public delegate void DartThrownEventHandler(Dart dart);
     public static DartThrownEventHandler DartThrown;
+    
+    private float sensitivity = 0.6f;
+    [SerializeField]
+    private Slider SensitivitySlider;
+    
+    [NonSerialized]
+    public bool GameActive;
 
     private void Awake()
     {
@@ -30,6 +38,8 @@ public class SwipeInput : MonoBehaviour
         
         touchControls.Touch.Press.started += TouchStarted;
         touchControls.Touch.Press.canceled += TouchEnded;
+        
+        SensitivitySlider.onValueChanged.AddListener(delegate{ChangeSensitivity();});
     }
     
     private void OnEnable()
@@ -44,8 +54,8 @@ public class SwipeInput : MonoBehaviour
 
     private void Start()
     {
-        defaultDartPosition = CurrentDart.transform.position;
-        defaultDartRotation = CurrentDart.transform.rotation;
+        // defaultDartPosition = CurrentDart.transform.position;
+        // defaultDartRotation = CurrentDart.transform.rotation;
         //Dart.HitBoard += CreateNewDart;
     }
 
@@ -63,6 +73,7 @@ public class SwipeInput : MonoBehaviour
     /// </summary>
     private void TouchEnded(InputAction.CallbackContext context)
     {
+        if(!GameActive) return;
         // Calculate time length of swipe, return if swipe too long ot short
         endTime = Time.time;
         float timeHeld = endTime - startTime;
@@ -71,7 +82,7 @@ public class SwipeInput : MonoBehaviour
         swipeEnd = touchControls.Touch.Position.ReadValue<Vector2>();
         
         Vector2 swipeVector = swipeStart - swipeEnd;
-        float swipeMagnitude = CorrectForScreenSize(swipeVector).magnitude;
+        float swipeMagnitude = CorrectForScreenSize(swipeVector).magnitude * sensitivity;
         Vector2 swipeDirection = swipeVector.normalized;
         
         CurrentDart.Launch(swipeDirection, swipeMagnitude, timeHeld);
@@ -96,5 +107,8 @@ public class SwipeInput : MonoBehaviour
         CurrentDart.Reset();
     }
 
-
+    private void ChangeSensitivity()
+    {
+        sensitivity = SensitivitySlider.value / 10;
+    }
 }

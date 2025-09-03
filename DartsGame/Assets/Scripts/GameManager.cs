@@ -15,13 +15,15 @@ public class GameManager : MonoBehaviour
     private TextMeshProUGUI DartText, RoundText, ScoreText;
     
     private List<GameObject> dartList = new List<GameObject>();
+
+    [SerializeField] 
+    private GameObject MainMenu, CountUpMenu;
     
     // Start is called before the first frame update
     void Start()
     {
         Dart.HitBoard += BoardHit;
         SwipeInput.DartThrown += OnDartThrown;
-        CreateNewDart();
     }
 
     // Update is called once per frame
@@ -30,15 +32,44 @@ public class GameManager : MonoBehaviour
         
     }
 
+    public void StartGame()
+    {
+        MainMenu.SetActive(false);
+        CountUpMenu.SetActive(true);
+        Player.GameActive = true;
+        dartCount = 1;
+        roundCount = 1;
+        totalScore = 0;
+        dartList.Clear();
+        
+        DartText.text = "Dart: " + dartCount;
+        RoundText.text = "Round: " + roundCount;
+        ScoreText.text = "Total: " + totalScore;
+        
+        CreateNewDart();
+    }
+    
+    private void EndGame()
+    {
+        MainMenu.SetActive(true);
+        CountUpMenu.SetActive(false);
+        Player.GameActive = false;
+        ClearDartsOnBoard();
+        Destroy(dartList[0].gameObject);
+        dartList.Clear();
+    }
+
     private void BoardHit(int score, bool isDouble)
     {
-        CreateNewDart();
         dartCount++;
         if (dartCount > 3)
         {
             dartCount = 1;
             roundCount++;
+            if(roundCount > 5) EndGame();
         }
+        
+        CreateNewDart();
         
         totalScore += score;
         
@@ -63,11 +94,6 @@ public class GameManager : MonoBehaviour
         }
         
         dartList = new List<GameObject>() {newestDart};
-    }
-
-    private void GameEnd()
-    {
-        
     }
 
     private void ResetGame()

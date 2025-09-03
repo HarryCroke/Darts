@@ -72,13 +72,19 @@ public class Dart : MonoBehaviour
     public void Reset()
     {
         rb.isKinematic = true;
-        rb.transform.position = new Vector3(0, -1, 6);
+        rb.transform.position = new Vector3(0, -0.93f, 4.91f);
         rb.transform.rotation = Quaternion.identity;
         rb.velocity = Vector3.zero;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.CompareTag("Backboard") && !onBoard)
+        {
+            OnMiss();
+            return;
+        }
+        
         if(!other.CompareTag("Dartboard") || onBoard) return;
         rb.isKinematic = true;
         onBoard = true;
@@ -92,6 +98,16 @@ public class Dart : MonoBehaviour
         GetComponent<BoxCollider>().enabled = false;
         
         HitBoard?.Invoke(totalScore, true);
+    }
+
+    private void OnMiss()
+    {
+        if(onBoard) return;
+        totalScore = 0;
+        onBoard = true;
+        string scoreText = ("Miss!");
+        GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = scoreText;
+        HitBoard?.Invoke(totalScore, false);
     }
 
     /// <summary>
