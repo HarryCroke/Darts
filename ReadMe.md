@@ -1,0 +1,16 @@
+# Pirate Darts game 
+# by Harry Croker
+
+# Description
+Pirate Darts is a simple darts game with some basic pirate theming. It is not recommended to play with a mouse, as swipe detection is less consistent than on an actual smart-phone.
+<br><br>
+The game is set on a pirate ship, and as such, features a ship swaying mechanic to increase difficulty; moving the dartboard in an unpredictable pattern to make it harder to hit your desired target. This sway can be toggled between various intensities or disabled on the main menu.
+<br><br>
+Additionally, the player can alter the level of sensitivity to determine how far they must swipe to throw the dart in a given direction.
+
+# Game Modes
+Pirate Darts features 2 game modes; Count-Up and 301.
+<br><br>
+**Count-Up -** The player plays 5 rounds of 3 darts in an effort to achieve a high total score.
+<br>
+**301 -** The player starts with 301 points, and must throw darts in rounds of 3 darts to reduce that total to 0. If the player drops below 0 points, they will go bust and forfeit the round, starting the next round with the amount of points they had previously.
