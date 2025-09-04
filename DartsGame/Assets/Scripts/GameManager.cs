@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class GameManager : MonoBehaviour
     [Tooltip("Contains a list of available Game Mode components")]
     public GameMode[] GameModes;
     private GameMode currentGameMode;
+    
+    [SerializeField]
+    private Button CountUpButton, ThreeOhOneButton;
 
     [SerializeField, Tooltip("Reference to the Textbox which displays the final score of the previous game")]
     private TextMeshProUGUI FinalScoreText;
@@ -29,13 +33,15 @@ public class GameManager : MonoBehaviour
         Dart.HitBoard += OnBoardHit;
         SwipeInput.DartThrown += OnDartThrown;
         Dart.UpdateScoreText += UpdateScoreText;
-
-        currentGameMode = GameModes[0];
-        currentGameMode.Manager = this;
+        
+        CountUpButton.onClick.AddListener(delegate {StartGame(0);});
+        ThreeOhOneButton.onClick.AddListener(delegate {StartGame(1);});
     }
 
-    public void StartGame()
+    private void StartGame(int gameModeIndex)
     {
+        currentGameMode = GameModes[gameModeIndex];
+        currentGameMode.Manager = this;
         currentGameMode.StartGame();
     }
     
