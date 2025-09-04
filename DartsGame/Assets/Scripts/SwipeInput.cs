@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class SwipeInput : MonoBehaviour
@@ -17,12 +14,13 @@ public class SwipeInput : MonoBehaviour
     public Dart CurrentDart;
     private Vector3 defaultDartPosition;
     private Quaternion defaultDartRotation;
-    
     public GameObject DartPrefab;
     
+    // Called when a dart is launched
     public delegate void DartThrownEventHandler(Dart dart);
     public static DartThrownEventHandler DartThrown;
     
+    // Sensitivity
     private float sensitivity = 0.6f;
     [SerializeField]
     private Slider SensitivitySlider;
@@ -92,14 +90,6 @@ public class SwipeInput : MonoBehaviour
     private static Vector2 CorrectForScreenSize(Vector2 vector)
     {
         return new Vector2(vector.x / Screen.width, vector.y / Screen.height);
-    }
-
-    /// <summary>
-    /// Reset current dart to starting location
-    /// </summary>
-    public void Reset()
-    {
-        CurrentDart.Reset();
     }
 
     private void ChangeSensitivity()

@@ -1,14 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Dart : MonoBehaviour
 {
     [NonSerialized]
     public Rigidbody Rb;
+    
     // Is the dart stuck to the dartboard?
     private bool onBoard;
     
@@ -16,11 +14,11 @@ public class Dart : MonoBehaviour
     public delegate void HitBoardEventHandler(int score, bool successfulHit);
     public static HitBoardEventHandler HitBoard;
     
-    
+    // Called when the player either hits or misses, to give text feedback
     public delegate void UpdateScoreTextEventHandler(string newText);
     public static UpdateScoreTextEventHandler UpdateScoreText;
     
-    // Dart Stats
+    [Header("Stats")]
     [SerializeField, Range(0f, 100f), Tooltip("Multiplied by input vector magnitude to determine force")]
     private float ForceMagnifier;
     [SerializeField, Range(0f, 100f), Tooltip("Z Force applied to dart when launched")]
@@ -41,8 +39,8 @@ public class Dart : MonoBehaviour
     };
 
     // Base score is calculated using the angle between the bullseye
-    // and the dart to calculate which segment the dart is in
-    // This array stores the score of each 18 degree segment
+    // and the dart to determine which score segment the dart is in.
+    // This array stores the score of each 18 degree segment clockwise around the board
     private static int[] scoreArray = new int[]
     {
         11, 14, 9, 12, 5, 20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8
@@ -71,17 +69,6 @@ public class Dart : MonoBehaviour
         Vector3 forceVector = new Vector3(direction.x * force, -direction.y * force, -ForwardForce);
         Rb.AddForce(forceVector, ForceMode.Impulse);
     }
-    
-    /// <summary>
-    /// Reset this dart to its starting location
-    /// </summary>
-    public void Reset()
-    {
-        Rb.isKinematic = true;
-        Rb.transform.position = new Vector3(0, -0.93f, 4.91f);
-        Rb.transform.rotation = Quaternion.identity;
-        Rb.velocity = Vector3.zero;
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -96,7 +83,7 @@ public class Dart : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when this dart hits the dartboard
+    /// Called when this dart hits the dartboard. 
     /// </summary>
     private void OnBoardHit(Collider other)
     {
@@ -104,6 +91,7 @@ public class Dart : MonoBehaviour
         onBoard = true;
         Dartboard dartboard = other.transform.parent.GetComponent<Dartboard>();
 
+        // Calculate and display score
         totalScore = CalculateScore(dartboard.Bullseye);
         string scoreText = (baseScore + " x " + multiplier + " = " + totalScore);
         UpdateScoreText?.Invoke(scoreText);
@@ -113,6 +101,7 @@ public class Dart : MonoBehaviour
         
         HitBoard?.Invoke(totalScore, true);
 
+        // Re-parent the dart so that it moves along with the swaying ship
         gameObject.transform.parent = other.gameObject.transform.parent;
     }
     
@@ -137,12 +126,50 @@ public class Dart : MonoBehaviour
     /// </summary>
     private int CalculateScore(GameObject bullseye)
     {
+        // Base score is calculated using the angle from the bullseye
         baseScore = GetScoreFromAngle(GetAngleFromBullseye(bullseye));
         
+        // Multiplier is calculated using the distance from the bullseye
         // Base score will be overwritten if a bullseye is hit
         multiplier = GetMultiplierFromDistance(GetDistanceFromBullseye(bullseye));
         
         return baseScore * multiplier;
+    }
+    
+    /// <summary>
+    /// Return the angle of the dart from the bullseye from 0-360, rotated so that 0 is the start of a segment.
+    /// Z position is ignored.
+    /// <param name="bullseye">Reference to a game-object at the centre of the dartboard</param>
+    /// </summary>
+    private float GetAngleFromBullseye(GameObject bullseye)
+    {
+        Vector2 dartLocation = new Vector2(transform.position.x, transform.position.y);
+        Vector2 bullseyeLocation = new Vector2(bullseye.transform.position.x, bullseye.transform.position.y);
+        Vector2 diff = dartLocation - bullseyeLocation;
+        
+        // 9 is added as it is half of the angle of each segment,
+        // otherwise 0 degrees would fall in the centre of a segment
+        float angle =  (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 9;
+        
+        // Convert minus degrees to positive degrees
+        if (angle < 0) angle += 360;
+        return angle;
+    }
+
+    /// <summary>
+    /// Return the base score of the segment the dart landed in. 
+    /// <param name="angle">The angle of the dart from the bullseye between 0-360</param>
+    /// </summary>
+    private int GetScoreFromAngle(float angle)
+    {
+        for (int i = 0; i < scoreArray.Length; i++)
+        {
+            if (angle < (i + 1) * 18)
+            {
+                return scoreArray[i];
+            }
+        }
+        return 0;
     }
 
     /// <summary>
@@ -179,40 +206,4 @@ public class Dart : MonoBehaviour
 
         return 0;
     }
-
-    /// <summary>
-    /// Return the angle of the dart from the bullseye from 0-360, rotated so that 0 is the start of a segment.
-    /// Z position is ignored.
-    /// <param name="bullseye">Reference to a game-object at the centre of the dartboard</param>
-    /// </summary>
-    private float GetAngleFromBullseye(GameObject bullseye)
-    {
-        Vector2 dartLocation = new Vector2(transform.position.x, transform.position.y);
-        Vector2 bullseyeLocation = new Vector2(bullseye.transform.position.x, bullseye.transform.position.y);
-        Vector2 diff = dartLocation - bullseyeLocation;
-        
-        // 9 is added as it is half of the angle of each segment, otherwise 0 would fall in the centre of a segment
-        float angle =  (Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg) + 9;
-        
-        // Convert minus degrees to positive degrees
-        if (angle < 0) angle += 360;
-        return angle;
-    }
-
-    /// <summary>
-    /// Return the base score of the segment the dart landed in. 
-    /// <param name="angle">The angle of the dart from the bullseye between 0-360</param>
-    /// </summary>
-    private int GetScoreFromAngle(float angle)
-    {
-        for (int i = 0; i < scoreArray.Length; i++)
-        {
-            if (angle < (i + 1) * 18)
-            {
-                return scoreArray[i];
-            }
-        }
-        return 0;
-    }
-
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -44,24 +43,31 @@ public class GameManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
+    /// <summary>
+    /// Called when a game mode is selected
+    /// <param name="gameModeIndex">The chosen game mode</param>
+    /// </summary>
     private void StartGame(int gameModeIndex)
     {
         currentGameMode = GameModes[gameModeIndex];
         currentGameMode.Manager = this;
         currentGameMode.StartGame();
     }
-    
-    private void EndGame()
-    {
-        currentGameMode.EndGame();
-    }
 
+    /// <summary>
+    /// Called when a dart either hit the board or missed
+    /// <param name="score">The total score of the dart</param>
+    /// <param name="successfulHit">Did the dart successfully hit the dartboard?</param>
+    /// </summary>
     private void OnBoardHit(int score, bool successfulHit)
     {
         currentGameMode.OnBoardHit(score, successfulHit);
         if(successfulHit) PlayAudioClip(HitAudio);
     }
 
+    /// <summary>
+    /// Called when a dart is thrown
+    /// </summary>
     private void OnDartThrown(Dart dart)
     {
         currentGameMode.OnDartThrown(dart);
