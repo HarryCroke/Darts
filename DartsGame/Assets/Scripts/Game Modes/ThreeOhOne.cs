@@ -58,6 +58,8 @@ public class ThreeOhOne : GameMode
         {
             NewRound();
         }
+
+        roundStartScore = remainingScore;
         
         if(Manager.Player.GameActive) Manager.CreateNewDart();
         
@@ -78,7 +80,8 @@ public class ThreeOhOne : GameMode
         {
             Manager.UpdateScoreText("Bust!");
             remainingScore = roundStartScore;
-        }
+        } 
+        
         roundStartScore = remainingScore;
     }
 
