@@ -14,6 +14,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Game Modes/CountUp.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/SwipeInput.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://E:/Repositories/New folder/MetronomesAndMagic/My project/Assets/Scripts/Metronome.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -91,7 +92,8 @@
       <updated>1756735983436</updated>
       <workItem from="1756735986478" duration="12038000" />
       <workItem from="1756821697471" duration="2280000" />
-      <workItem from="1756908422448" duration="8121000" />
+      <workItem from="1756908422448" duration="9320000" />
+      <workItem from="1756995951998" duration="5465000" />
     </task>
     <servers />
   </component>

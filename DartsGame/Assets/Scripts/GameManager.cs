@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,107 +7,85 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public SwipeInput Player;
-    
     public GameObject DartPrefab;
     public Vector3 InitialDartPosition;
-
-    private int dartCount = 1, roundCount = 1, totalScore;
-    [SerializeField]
-    private TextMeshProUGUI DartText, RoundText, ScoreText;
     
-    private List<GameObject> dartList = new List<GameObject>();
+    [NonSerialized] // List of all the Darts spawned by the game manager
+    public List<GameObject> DartList = new List<GameObject>();
 
-    [SerializeField] 
-    private GameObject MainMenu, CountUpMenu;
+    [Tooltip("Reference to the parent game object of the main menu")]
+    public GameObject MainMenu;
+    
+    [Tooltip("Contains a list of available Game Mode components")]
+    public GameMode[] GameModes;
+    private GameMode currentGameMode;
+
+    [SerializeField, Tooltip("Reference to the Textbox which displays the final score of the previous game")]
+    private TextMeshProUGUI FinalScoreText;
     
     // Start is called before the first frame update
     void Start()
     {
-        Dart.HitBoard += BoardHit;
+        Dart.HitBoard += OnBoardHit;
         SwipeInput.DartThrown += OnDartThrown;
-    }
+        Dart.UpdateScoreText += UpdateScoreText;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        currentGameMode = GameModes[0];
+        currentGameMode.Manager = this;
     }
 
     public void StartGame()
     {
-        MainMenu.SetActive(false);
-        CountUpMenu.SetActive(true);
-        Player.GameActive = true;
-        dartCount = 1;
-        roundCount = 1;
-        totalScore = 0;
-        dartList.Clear();
-        
-        DartText.text = "Dart: " + dartCount;
-        RoundText.text = "Round: " + roundCount;
-        ScoreText.text = "Total: " + totalScore;
-        
-        CreateNewDart();
+        currentGameMode.StartGame();
     }
     
     private void EndGame()
     {
-        MainMenu.SetActive(true);
-        CountUpMenu.SetActive(false);
-        Player.GameActive = false;
-        ClearDartsOnBoard();
-        Destroy(dartList[0].gameObject);
-        dartList.Clear();
+        currentGameMode.EndGame();
     }
 
-    private void BoardHit(int score, bool isDouble)
+    private void OnBoardHit(int score, bool isDouble)
     {
-        dartCount++;
-        if (dartCount > 3)
-        {
-            dartCount = 1;
-            roundCount++;
-            if(roundCount > 5) EndGame();
-        }
-        
-        CreateNewDart();
-        
-        totalScore += score;
-        
-        DartText.text = "Dart: " + dartCount;
-        RoundText.text = "Round: " + roundCount;
-        ScoreText.text = "Total: " + totalScore;
-        
+        currentGameMode.OnBoardHit(score, isDouble);
     }
 
     private void OnDartThrown(Dart dart)
     {
-        if(roundCount != 1 && dartCount == 1) ClearDartsOnBoard();
+        currentGameMode.OnDartThrown(dart);
     }
 
-    private void ClearDartsOnBoard()
+    /// <summary>
+    /// Destroy any dart currently on the dartboard
+    /// </summary>
+    public void ClearDartsOnBoard()
     {
-        GameObject newestDart = dartList[3];
-        dartList.Remove(newestDart);
-        foreach (var dart in dartList)
+        // Newest Dart represents the dart currently available to be launched by the player
+        GameObject newestDart = DartList[DartList.Count - 1];
+        
+        DartList.Remove(newestDart);
+        foreach (var dart in DartList)
         {
             Destroy(dart);
         }
         
-        dartList = new List<GameObject>() {newestDart};
-    }
-
-    private void ResetGame()
-    {
-        
+        DartList = new List<GameObject>() {newestDart};
     }
     
     /// <summary>
+    /// Create a new Dart ready for the player to launch
     /// </summary>
-    private void CreateNewDart()
+    public void CreateNewDart()
     {
         GameObject newDart = Instantiate(DartPrefab, InitialDartPosition, Quaternion.identity);
         Player.CurrentDart = newDart.GetComponent<Dart>();
-        dartList.Add(newDart);
+        DartList.Add(newDart);
+    }
+
+    /// <summary>
+    /// Update the global score text with new text
+    /// </summary>
+    public void UpdateScoreText(string newText)
+    {
+        FinalScoreText.text = newText;
     }
 }

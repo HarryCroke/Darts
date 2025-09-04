@@ -52,13 +52,6 @@ public class SwipeInput : MonoBehaviour
         touchControls.Disable();
     }
 
-    private void Start()
-    {
-        // defaultDartPosition = CurrentDart.transform.position;
-        // defaultDartRotation = CurrentDart.transform.rotation;
-        //Dart.HitBoard += CreateNewDart;
-    }
-
     /// <summary>
     /// Called when player starts touching the screen to begin a swipe
     /// </summary>

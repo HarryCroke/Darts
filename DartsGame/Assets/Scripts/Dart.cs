@@ -14,6 +14,10 @@ public class Dart : MonoBehaviour
     public delegate void HitBoardEventHandler(int score, bool isDouble);
     public static HitBoardEventHandler HitBoard;
     
+    
+    public delegate void UpdateScoreTextEventHandler(string newText);
+    public static UpdateScoreTextEventHandler UpdateScoreText;
+    
     // Dart Stats
     [SerializeField, Range(0f, 100f), Tooltip("Multiplied by input vector magnitude to determine force")]
     private float ForceMagnifier;
@@ -82,31 +86,44 @@ public class Dart : MonoBehaviour
         if (other.CompareTag("Backboard") && !onBoard)
         {
             OnMiss();
-            return;
         }
-        
-        if(!other.CompareTag("Dartboard") || onBoard) return;
+        else if (other.CompareTag("Dartboard") && !onBoard)
+        {
+            OnBoardHit(other);
+        }
+    }
+
+    /// <summary>
+    /// Called when this dart hits the dartboard
+    /// </summary>
+    private void OnBoardHit(Collider other)
+    {
         rb.isKinematic = true;
         onBoard = true;
         Dartboard dartboard = other.transform.parent.GetComponent<Dartboard>();
 
         totalScore = CalculateScore(dartboard.Bullseye);
         string scoreText = (baseScore + " x " + multiplier + " = " + totalScore);
-        GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = scoreText;
+        UpdateScoreText?.Invoke(scoreText);
         
         // Disable collision once on the board
         GetComponent<BoxCollider>().enabled = false;
         
         HitBoard?.Invoke(totalScore, true);
     }
-
+    
+    /// <summary>
+    /// Called when a dart hits the back wall or falls to the floor
+    /// </summary>
     private void OnMiss()
     {
+        // Check the dart hasn't already hit the board
         if(onBoard) return;
+        
         totalScore = 0;
         onBoard = true;
-        string scoreText = ("Miss!");
-        GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = scoreText;
+
+        UpdateScoreText?.Invoke("Miss!");
         HitBoard?.Invoke(totalScore, false);
     }
 
