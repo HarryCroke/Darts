@@ -50,8 +50,12 @@ public class ThreeOhOne : GameMode
     {
         remainingScore -= score;
         
+        // End the game when at exactly 0 score
         if(remainingScore == 0) EndGame();
+        
         dartCount++;
+        
+        // Start a new round every 3 darts or when bust
         if (dartCount > 3 || remainingScore < 0)
         {
             NewRound();
@@ -70,6 +74,7 @@ public class ThreeOhOne : GameMode
         dartCount = 1;
         roundCount++;
 
+        // Reset points when bust
         if (remainingScore < 0)
         {
             Manager.UpdateScoreText("Bust!");

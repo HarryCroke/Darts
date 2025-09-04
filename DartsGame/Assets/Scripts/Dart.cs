@@ -110,6 +110,8 @@ public class Dart : MonoBehaviour
         GetComponent<BoxCollider>().enabled = false;
         
         HitBoard?.Invoke(totalScore, true);
+
+        gameObject.transform.parent = other.gameObject.transform.parent;
     }
     
     /// <summary>

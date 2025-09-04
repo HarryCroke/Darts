@@ -15,7 +15,9 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Game Modes/CountUp.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Sawying Object.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/SwipeInput.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://E:/Repositories/Capyball/Assets/Scripts/SquashStretch.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://E:/Repositories/New folder/MetronomesAndMagic/My project/Assets/Scripts/Metronome.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
@@ -94,6 +96,7 @@
       <workItem from="1756821697471" duration="2280000" />
       <workItem from="1756908422448" duration="9320000" />
       <workItem from="1756995951998" duration="8203000" />
+      <workItem from="1757009320381" duration="3547000" />
     </task>
     <servers />
   </component>
