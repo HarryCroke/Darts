@@ -45,6 +45,8 @@ public class CountUp : GameMode
 
     public override void OnBoardHit(int score, bool isDouble)
     {
+        totalScore += score;
+        
         dartCount++;
         if (dartCount > 3)
         {
@@ -54,8 +56,6 @@ public class CountUp : GameMode
         }
         
         if(Manager.Player.GameActive) Manager.CreateNewDart();
-        
-        totalScore += score;
         
         // Update UI
         DartText.text = "Dart: " + dartCount;
