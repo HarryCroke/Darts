@@ -66,8 +66,10 @@ public class SwipeInput : MonoBehaviour
     /// </summary>
     private void TouchEnded(InputAction.CallbackContext context)
     {
-        if(!GameActive) return;
-        // Calculate time length of swipe, return if swipe too long ot short
+        // Ignore swipe if in main menu or if dart is already travelling
+        if(!GameActive || !CurrentDart.Rb.isKinematic) return;
+        
+        // Calculate time length of swipe, return if swipe too long or short
         endTime = Time.time;
         float timeHeld = endTime - startTime;
         if(timeHeld < 0.05f || timeHeld > 1) return;

@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Dart : MonoBehaviour
 {
-    private Rigidbody rb;
+    [NonSerialized]
+    public Rigidbody Rb;
     // Is the dart stuck to the dartboard?
     private bool onBoard;
     
@@ -49,7 +51,7 @@ public class Dart : MonoBehaviour
     
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        Rb = GetComponent<Rigidbody>();
     }
 
     ///<summary>
@@ -61,13 +63,13 @@ public class Dart : MonoBehaviour
     public void Launch(Vector2 direction, float force, float time)
     {
         // Don't launch Dart if already in air
-        if(rb.isKinematic == false) return;
+        if(Rb.isKinematic == false) return;
 
         force *= ForceMagnifier;
         
-        rb.isKinematic = false;
+        Rb.isKinematic = false;
         Vector3 forceVector = new Vector3(direction.x * force, -direction.y * force, -ForwardForce);
-        rb.AddForce(forceVector, ForceMode.Impulse);
+        Rb.AddForce(forceVector, ForceMode.Impulse);
     }
     
     /// <summary>
@@ -75,10 +77,10 @@ public class Dart : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        rb.isKinematic = true;
-        rb.transform.position = new Vector3(0, -0.93f, 4.91f);
-        rb.transform.rotation = Quaternion.identity;
-        rb.velocity = Vector3.zero;
+        Rb.isKinematic = true;
+        Rb.transform.position = new Vector3(0, -0.93f, 4.91f);
+        Rb.transform.rotation = Quaternion.identity;
+        Rb.velocity = Vector3.zero;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -98,7 +100,7 @@ public class Dart : MonoBehaviour
     /// </summary>
     private void OnBoardHit(Collider other)
     {
-        rb.isKinematic = true;
+        Rb.isKinematic = true;
         onBoard = true;
         Dartboard dartboard = other.transform.parent.GetComponent<Dartboard>();
 

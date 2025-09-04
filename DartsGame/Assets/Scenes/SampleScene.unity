@@ -722,7 +722,6 @@ GameObject:
   - component: {fileID: 163778420}
   - component: {fileID: 163778421}
   - component: {fileID: 163778423}
-  - component: {fileID: 163778422}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -803,14 +802,6 @@ MonoBehaviour:
   DartText: {fileID: 686617218}
   RoundText: {fileID: 2108766355}
   ScoreText: {fileID: 1449164037}
---- !u!81 &163778422
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 163778417}
-  m_Enabled: 1
 --- !u!82 &163778423
 AudioSource:
   m_ObjectHideFlags: 0
