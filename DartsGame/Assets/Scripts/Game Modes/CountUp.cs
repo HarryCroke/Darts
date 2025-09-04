@@ -43,7 +43,7 @@ public class CountUp : GameMode
         Manager.UpdateScoreText("Final Score: " + totalScore);
     }
 
-    public override void OnBoardHit(int score, bool isDouble)
+    public override void OnBoardHit(int score, bool successfulHit)
     {
         totalScore += score;
         
@@ -52,6 +52,7 @@ public class CountUp : GameMode
         {
             dartCount = 1;
             roundCount++;
+            Manager.PlayAudioClip(Manager.BellAudio);
             if(roundCount > 5) EndGame();
         }
         

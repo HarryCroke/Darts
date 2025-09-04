@@ -3,3 +3,5 @@ Dart Asset - https://sketchfab.com/3d-models/game-ready-red-dart-asset-42d0ff9b2
 Pirate Ship wall texture - https://polyhaven.com/a/old_wood_floor
 Sword Asset - https://theteaguns.itch.io/flat-shaded-low-poly-swords
 Logo created with - https://cooltext.com/Logo-Design-Liquid-Gold
+Dart Throw sound - https://freesound.org/people/denao270/sounds/346373/
+Dart hit sound -

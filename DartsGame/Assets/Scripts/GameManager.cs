@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class GameManager : MonoBehaviour
     [SerializeField, Tooltip("Reference to the Textbox which displays the final score of the previous game")]
     private TextMeshProUGUI FinalScoreText;
     
+    private AudioSource audioSource;
+    public AudioClip HitAudio, ThrowAudio, BellAudio;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +40,8 @@ public class GameManager : MonoBehaviour
         
         CountUpButton.onClick.AddListener(delegate {StartGame(0);});
         ThreeOhOneButton.onClick.AddListener(delegate {StartGame(1);});
+        
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void StartGame(int gameModeIndex)
@@ -50,14 +56,16 @@ public class GameManager : MonoBehaviour
         currentGameMode.EndGame();
     }
 
-    private void OnBoardHit(int score, bool isDouble)
+    private void OnBoardHit(int score, bool successfulHit)
     {
-        currentGameMode.OnBoardHit(score, isDouble);
+        currentGameMode.OnBoardHit(score, successfulHit);
+        if(successfulHit) PlayAudioClip(HitAudio);
     }
 
     private void OnDartThrown(Dart dart)
     {
         currentGameMode.OnDartThrown(dart);
+        PlayAudioClip(ThrowAudio);
     }
 
     /// <summary>
@@ -93,5 +101,15 @@ public class GameManager : MonoBehaviour
     public void UpdateScoreText(string newText)
     {
         FinalScoreText.text = newText;
+    }
+
+    /// <summary>
+    /// Play an audio clip with a random pitch between 0.9-1.1
+    /// </summary>
+    public void PlayAudioClip(AudioClip audioClip)
+    {
+       float pitch = Random.Range(0.9f, 1.1f);
+       audioSource.pitch = pitch;
+       audioSource.PlayOneShot(audioClip);
     }
 }

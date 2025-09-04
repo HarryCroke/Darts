@@ -11,7 +11,7 @@ public class Dart : MonoBehaviour
     private bool onBoard;
     
     // Called when the dart hits the dartboard
-    public delegate void HitBoardEventHandler(int score, bool isDouble);
+    public delegate void HitBoardEventHandler(int score, bool successfulHit);
     public static HitBoardEventHandler HitBoard;
     
     

@@ -46,7 +46,7 @@ public class ThreeOhOne : GameMode
         Manager.UpdateScoreText("Rounds taken: " + roundCount);
     }
 
-    public override void OnBoardHit(int score, bool isDouble)
+    public override void OnBoardHit(int score, bool successfulHit)
     {
         remainingScore -= score;
         
@@ -73,6 +73,7 @@ public class ThreeOhOne : GameMode
     {
         dartCount = 1;
         roundCount++;
+        Manager.PlayAudioClip(Manager.BellAudio);
 
         // Reset points when bust
         if (remainingScore < 0)
